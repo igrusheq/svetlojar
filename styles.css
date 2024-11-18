@@ -457,6 +457,27 @@ input[type="file"] {
     right: -70px; /* Расположение справа от слайдера */
 }
 
+/* Стили для изображений */
+.photos img {
+    width: 240px;
+    height: 378px;
+    transition: transform 0.3s ease, z-index 0.3s ease;
+}
+
+/* Увеличение изображения при нажатии */
+.photos img.zoomed {
+    transform: scale(1.5); /* Увеличиваем на 1.5 раза */
+    z-index: 1000; /* Изображение будет поверх других */
+}
+
+/* Центрируем увеличенное изображение */
+.zoomed {
+    position: fixed;
+    top: -50%;
+    left: 25%;
+    transform: translate(-50%, -50%) scale(1.5);
+    z-index: 1000;
+}
 
 @media (max-width: 1600px) {
     .header {
@@ -757,6 +778,28 @@ input[type="file"] {
         }
         .timer-text {
             text-align: start;
+        }
+        .photos img {
+            width: 140px;
+            height: 178px;
+            transition: transform 0.3s ease, z-index 0.3s ease;
+        }
+
+        /* Увеличение изображения при нажатии */
+        .photos img.zoomed {
+            transform: scale(2.5); /* Увеличиваем на 1.5 раза */
+            z-index: 1000; /* Изображение будет поверх других */
+        }
+
+        /* Центрируем увеличенное изображение */
+        .zoomed {
+            position: fixed;
+            top: -50%;
+            left: 32%;
+            transform: translate(-50%, -50%) scale(1);
+            width: 140px;
+            height: 178px;
+            z-index: 1000;
         }
     }
 }

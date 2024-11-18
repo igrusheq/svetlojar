@@ -148,3 +148,21 @@ document.addEventListener('DOMContentLoaded', function() {
         interval = setInterval(() => showSlide(currentIndex + 1), 3000);
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('.photos img');  // Получаем все изображения с классом .photos img
+
+    images.forEach(image => {
+        image.addEventListener('click', function() {
+            // Если изображение уже увеличено, убираем увеличение
+            if (image.classList.contains('zoomed')) {
+                image.classList.remove('zoomed');
+            } else {
+                // Убираем увеличение у других изображений
+                images.forEach(img => img.classList.remove('zoomed'));
+                // Добавляем увеличение для текущего изображения
+                image.classList.add('zoomed');
+            }
+        });
+    });
+});
