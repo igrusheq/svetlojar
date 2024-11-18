@@ -215,6 +215,8 @@ document.getElementById('send').onclick = async function(event) {
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyxqkFV_X7KPnLhiQ2hZpwAxftHkscZGyTAkSh276vywbwIhzzcgFYTpaRgisc0KF1A/exec'; // Вставьте ваш URL Google Apps Script
 
+        let sendSuccess = false; // Флаг для определения успешности отправки
+
         try {
             const response = await fetch(scriptURL, {
                 method: 'POST',
@@ -225,21 +227,54 @@ document.getElementById('send').onclick = async function(event) {
                 mode: 'no-cors'
             });
 
-            const result = await response.json();
-            console.log('Response from server:', result); // Логируем ответ сервера
-            if (result.status === 'success') {
-
-                updateFirstEntry(payload.name, payload.phone);
-
-
-            } else {
-                alert('Вы участвуете!' + result.message);
-            }
+            // Предполагаем, что отправка успешна
+            console.log('Данные отправлены успешно.');
+            sendSuccess = true;
         } catch (error) {
-            console.error('Ошибка при отправке данных:', error); // Логируем ошибку в консоль
-            alert('Вы участвуете!');
+            console.error('Ошибка при отправке данных:', error);
         }
+
+        // Обновляем первую строку независимо от успеха отправки
+        updateFirstEntry(payload.name, payload.phone);
+
+        // Выводим уведомление пользователю
+        if (sendSuccess) {
+            alert('Вы участвуете! Данные успешно отправлены.');
+        } else {
+            alert('Вы участвуете! Но данные не удалось отправить на сервер.');
+        }
+
+        // Очищаем поля формы
+        [name, phone, file].forEach(item => {
+            item.value = ""; // Очистка значения
+            item.style.borderColor = ''; // Сброс стилей
+        });
+        label.style.color = ''; // Сброс стилей у лейбла
+        agree2.checked = false; // Сброс флага согласия
     }
 };
+
+// Функция для обновления данных в первом блоке
+function updateFirstEntry(newName, newPhone) {
+    const firstEntry = document.querySelector('.column .entry:first-child');
+    const nameSpan = firstEntry.querySelector('.name');
+    const phoneSpan = firstEntry.querySelector('.phone');
+
+    nameSpan.innerText = newName;
+
+    // Замена последних трех цифр телефона на ***
+    const maskedPhone = newPhone ? newPhone.slice(0, -3) + '***' : '';
+    phoneSpan.innerText = maskedPhone;
+}
+
+// Валидация номера телефона
+function validatePhone(phone) {
+    const phoneRegex = /^\+?[0-9\s\-()]{7,15}$/;
+    return phoneRegex.test(phone);
+}
+
+
+
+
 
 
