@@ -166,3 +166,80 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+document.getElementById('send').onclick = async function(event) {
+    event.preventDefault(); // Отключаем стандартное поведение кнопки
+
+    let hasError = false;
+
+    [name, phone, file].forEach(item => {
+        if (!item.value) {
+            if (item.id === 'file') {
+                const label = document.getElementById('label');
+                label.style.borderColor = 'red';
+                label.style.color = 'red';
+                hasError = true;
+            }
+            item.style.borderColor = 'red';
+            hasError = true;
+        } else {
+            item.style.borderColor = '';
+            if (item.id === 'file') {
+                label.style.color = '';
+                label.style.borderColor = '';
+            }
+        }
+    });
+
+    if (!validatePhone(phone.value)) {
+        phone.style.borderColor = 'red';
+        hasError = true;
+    } else {
+        phone.style.borderColor = '';
+    }
+
+    if (!agree2.checked) {
+        agree2.style.outline = '2px solid red';
+        hasError = true;
+    } else {
+        agree2.style.outline = '';
+    }
+
+    if (!hasError) {
+        // Сохраняем данные
+        const payload = {
+            name: name.value.trim(),
+            phone: phone.value.trim(),
+        };
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyxqkFV_X7KPnLhiQ2hZpwAxftHkscZGyTAkSh276vywbwIhzzcgFYTpaRgisc0KF1A/exec'; // Вставьте ваш URL Google Apps Script
+
+        try {
+            const response = await fetch(scriptURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+                mode: 'no-cors'
+            });
+
+            const result = await response.json();
+            console.log('Response from server:', result); // Логируем ответ сервера
+            if (result.status === 'success') {
+
+                updateFirstEntry(payload.name, payload.phone);
+
+
+            } else {
+                alert('Вы участвуете!' + result.message);
+            }
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error); // Логируем ошибку в консоль
+            alert('Вы участвуете!');
+        }
+    }
+};
+
+
