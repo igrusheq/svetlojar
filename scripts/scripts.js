@@ -168,15 +168,32 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-document.getElementById('send').onclick = async function(event) {
+// Добавляем обработчики событий на ввод текста
+[name, phone, file].forEach(item => {
+    item.addEventListener('input', function () {
+        if (item.value) {
+            item.style.borderColor = ''; // Снимаем красную подсветку
+            if (item.id === 'file') {
+                label.style.color = ''; // Снимаем красную подсветку у label
+                label.style.borderColor = '';
+            }
+        }
+    });
+});
+
+agree2.addEventListener('change', function () {
+    agree2.style.outline = ''; // Снимаем красную рамку при изменении состояния чекбокса
+});
+
+document.getElementById('send').onclick = async function (event) {
     event.preventDefault(); // Отключаем стандартное поведение кнопки
 
     let hasError = false;
 
+    // Проверяем поля формы
     [name, phone, file].forEach(item => {
         if (!item.value) {
             if (item.id === 'file') {
-                const label = document.getElementById('label');
                 label.style.borderColor = 'red';
                 label.style.color = 'red';
                 hasError = true;
@@ -215,7 +232,7 @@ document.getElementById('send').onclick = async function(event) {
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyxqkFV_X7KPnLhiQ2hZpwAxftHkscZGyTAkSh276vywbwIhzzcgFYTpaRgisc0KF1A/exec'; // Вставьте ваш URL Google Apps Script
 
-        let sendSuccess = false; // Флаг для определения успешности отправки
+        let sendSuccess = false;
 
         try {
             const response = await fetch(scriptURL, {
@@ -224,20 +241,17 @@ document.getElementById('send').onclick = async function(event) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),
-                mode: 'no-cors'
+                mode: 'no-cors',
             });
 
-            // Предполагаем, что отправка успешна
             console.log('Данные отправлены успешно.');
             sendSuccess = true;
         } catch (error) {
             console.error('Ошибка при отправке данных:', error);
         }
 
-        // Обновляем первую строку независимо от успеха отправки
         updateFirstEntry(payload.name, payload.phone);
 
-        // Выводим уведомление пользователю
         if (sendSuccess) {
             alert('Вы участвуете! Данные успешно отправлены.');
         } else {
@@ -246,13 +260,14 @@ document.getElementById('send').onclick = async function(event) {
 
         // Очищаем поля формы
         [name, phone, file].forEach(item => {
-            item.value = ""; // Очистка значения
+            item.value = ''; // Очистка значения
             item.style.borderColor = ''; // Сброс стилей
         });
         label.style.color = ''; // Сброс стилей у лейбла
         agree2.checked = false; // Сброс флага согласия
     }
 };
+
 
 // Функция для обновления данных в первом блоке
 function updateFirstEntry(newName, newPhone) {
