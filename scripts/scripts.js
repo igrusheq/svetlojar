@@ -112,8 +112,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextArrow = document.getElementById('nextArrow');
 
     const images = [
-        'images/otziv1.png', // замените на фактические пути к вашим изображениям
-        'images/otziv2.png'
+        'images/otziv4.png', // замените на фактические пути к вашим изображениям
+        'images/otziv3.png'
     ];
     let currentIndex = 0;
 
